@@ -29,21 +29,19 @@ class _MyWidgetState extends State<ImplicitAnimationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedAlign(
-              duration: const Duration(milliseconds: 200),
-              alignment: _visible ? Alignment.topLeft : Alignment.topRight,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: _visible ? 1 : 0.5,
-                child: Container(
-                  color: Colors.pink,
-                  width: size.width * 0.8,
-                  height: size.width * 0.8,
-                ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              transformAlignment: Alignment.center,
+              transform: Matrix4.rotationZ(_visible ? 1 : 0),
+              decoration: BoxDecoration(
+                color: _visible ? Colors.purple : Colors.pink,
+                borderRadius: BorderRadius.circular(_visible ? 100 : 0),
               ),
+              width: size.width * 0.8,
+              height: size.width * 0.8,
             ),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             ElevatedButton(onPressed: _trigger, child: const Text("go")),
           ],
