@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ImplicitAnimationsScreen extends StatefulWidget {
   const ImplicitAnimationsScreen({super.key});
@@ -20,7 +18,7 @@ class _MyWidgetState extends State<ImplicitAnimationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Implicit Animations"),
@@ -29,16 +27,23 @@ class _MyWidgetState extends State<ImplicitAnimationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              transformAlignment: Alignment.center,
-              transform: Matrix4.rotationZ(_visible ? 1 : 0),
-              decoration: BoxDecoration(
-                color: _visible ? Colors.purple : Colors.pink,
-                borderRadius: BorderRadius.circular(_visible ? 100 : 0),
+            TweenAnimationBuilder(
+              // tween: 시작값과 목표값이 있는 object
+              tween: ColorTween(
+                begin: Colors.blue,
+                end: Colors.green,
               ),
-              width: size.width * 0.8,
-              height: size.width * 0.8,
+              curve: Curves.bounceInOut,
+              duration: const Duration(
+                seconds: 2,
+              ),
+              builder: (context, value, child) {
+                return Image.network(
+                  "https://public.rive.app/community/video-thumbnails/4304-8873-flutter-dash-watermark.png",
+                  color: value,
+                  colorBlendMode: BlendMode.colorBurn,
+                );
+              },
             ),
             const SizedBox(
               height: 50,
