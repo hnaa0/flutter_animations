@@ -19,6 +19,15 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
       _range.value = _animationController.value;
     });
 
+  // AnimationStatus 사용해서 반복하는 방법
+  // ..addStatusListener((status) {
+  //   if (status == AnimationStatus.completed) {
+  //     _animationController.reverse();
+  //   } else if (status == AnimationStatus.dismissed) {
+  //     _animationController.forward();
+  //   }
+  // })
+
   late final Animation<Decoration> _decoration = DecorationTween(
     begin: BoxDecoration(
       color: Colors.blue,
@@ -48,7 +57,7 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
   late final CurvedAnimation _curvedAnimation = CurvedAnimation(
     parent: _animationController,
     curve: Curves.elasticOut,
-    reverseCurve: Curves.bounceIn,
+    reverseCurve: Curves.bounceOut,
   );
 
   void _play() {
@@ -68,6 +77,20 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
   void _onChanged(double value) {
     _range.value = 0;
     _animationController.value = value;
+  }
+
+  bool _looping = false;
+
+  void _toggleLooping() {
+    if (_looping) {
+      _animationController.stop();
+    } else {
+      _animationController.repeat(reverse: true);
+    }
+
+    setState(() {
+      _looping = !_looping;
+    });
   }
 
   @override
@@ -126,6 +149,12 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
                 ElevatedButton(
                   onPressed: _rewind,
                   child: const Text("rewind"),
+                ),
+                ElevatedButton(
+                  onPressed: _toggleLooping,
+                  child: Text(
+                    _looping ? "Stop looping" : "Start looping",
+                  ),
                 ),
               ],
             ),
