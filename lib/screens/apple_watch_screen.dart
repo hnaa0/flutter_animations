@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppleWatchScreen extends StatefulWidget {
@@ -32,26 +34,63 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
 class AppleWatchPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(
-      0,
-      0,
-      size.width,
-      size.width,
+    final center = Offset(
+      size.width / 2,
+      size.height / 2,
     );
 
-    final paint = Paint()..color = Colors.blue;
-
-    canvas.drawRect(rect, paint);
-
-    final circlePaint = Paint()
-      ..color = Colors.purple
+    final redCirclePaint = Paint()
+      ..color = Colors.pink.shade900.withOpacity(0.6)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 20;
+      ..strokeWidth = 25;
+
+    final redCircleRadius = (size.width / 2) * 0.9;
 
     canvas.drawCircle(
       Offset(size.width / 2, size.width / 2),
-      size.width / 2,
-      circlePaint,
+      redCircleRadius,
+      redCirclePaint,
+    );
+
+    final greenCirclePaint = Paint()
+      ..color = Colors.green.shade900.withOpacity(0.6)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 25;
+
+    canvas.drawCircle(
+      Offset(size.width / 2, size.width / 2),
+      (size.width / 2) * 0.76,
+      greenCirclePaint,
+    );
+
+    final blueCirclePaint = Paint()
+      ..color = Colors.blue.shade900.withOpacity(0.6)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 25;
+
+    canvas.drawCircle(
+      Offset(size.width / 2, size.width / 2),
+      (size.width / 2) * 0.62,
+      blueCirclePaint,
+    );
+
+    final redeArcRect = Rect.fromCircle(
+      center: center,
+      radius: redCircleRadius,
+    );
+
+    final redArcPaint = Paint()
+      ..color = Colors.pink
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 25;
+
+    canvas.drawArc(
+      redeArcRect,
+      -0.5 * pi,
+      1.5 * pi,
+      false,
+      redArcPaint,
     );
   }
 
