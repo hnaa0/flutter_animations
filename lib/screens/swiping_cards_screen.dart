@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SwipingCardsScreen extends StatefulWidget {
   const SwipingCardsScreen({super.key});
@@ -27,20 +26,37 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     end: 15,
   );
 
+  late final Tween<double> _scale = Tween(
+    begin: 0.8,
+    end: 1,
+  );
+
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     //delta: 이전 업데이트 이후 포인터가 이동한 양
     _position.value += details.delta.dx;
   }
 
+  void _whenComplete() {
+    _position.value = 0;
+    setState(() {
+      _index = _index == 6 ? 1 : _index + 1;
+    });
+  }
+
   void _onHorizontalDragEnd(DragEndDetails details) {
     final bound = size.width - 200;
+    final dropZone = size.width + 100;
 
     if (_position.value.abs() >= bound) {
-      if (_position.value.isNegative) {
-        _position.animateTo((size.width + 100) * -1);
-      } else {
-        _position.animateTo(size.width + 100);
-      }
+      final factor = _position.value.isNegative ? -1 : 1;
+      _position
+          .animateTo(
+        dropZone * factor,
+        curve: Curves.easeOut,
+      )
+          .whenComplete(() {
+        _whenComplete();
+      });
     } else {
       _position.animateTo(0, curve: Curves.easeOut);
     }
@@ -51,6 +67,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     _position.dispose();
     super.dispose();
   }
+
+  int _index = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +82,20 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
           // _position 값을 사용해서 _rotation tween 변환
           final angle = _rotation
               .transform((_position.value + size.width / 2) / size.width);
+          final scale = _scale.transform(_position.value.abs() / size.width);
 
           return Stack(
             alignment: Alignment.topCenter,
             children: [
+              Positioned(
+                top: 100,
+                child: Transform.scale(
+                  scale: min(scale, 1.0),
+                  child: Card(
+                    index: _index == 6 ? 1 : _index + 1,
+                  ),
+                ),
+              ),
               Positioned(
                 top: 100,
                 child: GestureDetector(
@@ -77,13 +105,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     offset: Offset(_position.value, 0),
                     child: Transform.rotate(
                       angle: angle * pi / 180,
-                      child: Material(
-                        elevation: 10,
-                        color: Colors.red.shade100,
-                        child: SizedBox(
-                          width: size.width * 0.8,
-                          height: size.height * 0.5,
-                        ),
+                      child: Card(
+                        index: _index,
                       ),
                     ),
                   ),
@@ -92,6 +115,34 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class Card extends StatelessWidget {
+  const Card({
+    super.key,
+    required this.index,
+  });
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Material(
+      elevation: 10,
+      borderRadius: BorderRadius.circular(10),
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: size.width * 0.8,
+        height: size.height * 0.5,
+        child: Image.asset(
+          "assets/covers/$index.jpg",
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
